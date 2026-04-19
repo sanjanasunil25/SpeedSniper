@@ -26,4 +26,4 @@ Tap the correct one before it drifts off!
 4. Run `npx nx serve speed-sniper-host`
 
 ## Live Demo
-[Play Speed Sniper - Coming Soon]
+speed-sniper-ten.vercel.app
