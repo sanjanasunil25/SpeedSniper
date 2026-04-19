@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "nx build game-engine-host",
-    "dev": "nx serve game-engine-host"
+    "build": "nx build speed-sniper-host",
+    "dev": "nx serve speed-sniper-host"
   },
   "private": true,
   "dependencies": {
