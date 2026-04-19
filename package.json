@@ -71,13 +71,11 @@
     "vitest": "4.0.9"
   },
   "workspaces": [
-    "apps/api",
-    "apps/game-engine-host",
-    "libs/api/products",
+    "apps/speed-sniper-host",
     "libs/shared/*",
     "libs/shared/services/claude",
     "libs/shared/services/session",
     "libs/shared/services/resource",
-    "libs/games/black-box"
+    "libs/games/speed-sniper"
   ]
 }
