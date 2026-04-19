@@ -1,0 +1,9 @@
+{
+  "name": "speed-sniper-host",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/speed-sniper-host/src",
+  "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project speed-sniper-host --web",
+  "targets": {}
+}
