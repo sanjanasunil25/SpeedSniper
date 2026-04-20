@@ -62,7 +62,7 @@ export function SpeedSniper({ apiKey, difficulty = 'easy', onGameComplete }: Spe
   if (!state) return <div style={{ color: 'white', padding: '2rem', textAlign: 'center' }}>Initializing Mission Ops...</div>;
 
   return (
-    <div className="speed-sniper-root" style={{ width: '100vw', minHeight: '100vh', margin: 0, padding: 0, backgroundColor: '#0a0a1a', color: '#f8fafc', overflow: state.screen === 'game' ? 'hidden' : 'auto', position: 'relative' }}>
+    <div className="speed-sniper-root" style={{ width: '100%', minHeight: '100vh', margin: 0, padding: 0, backgroundColor: '#0a0a1a', color: '#f8fafc' }}>
       {state.screen === 'upload' && (
         <UploadScreen onUpload={setUploadSuccess} />
       )}
