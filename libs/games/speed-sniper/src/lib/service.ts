@@ -38,56 +38,73 @@ export class SpeedSniperService {
 
     const referer = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4200';
 
+    const MODELS = [
+      'meta-llama/llama-3.1-8b-instruct:free',
+      'mistralai/mistral-7b-instruct:free',
+      'openrouter/free',
+    ];
+
     const trimmedText = text.slice(0, 1500);
     let lastError: Error | null = null;
 
-    for (let attempt = 0; attempt <= 2; attempt++) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
+    for (let modelIdx = 0; modelIdx < MODELS.length; modelIdx++) {
+      const model = MODELS[modelIdx];
+      for (let attempt = 0; attempt <= 1; attempt++) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'HTTP-Referer': referer,
-            'X-Title': 'Black Box Game Engine',
-            'Content-Type': 'application/json',
-          },
-          signal: controller.signal,
-          body: JSON.stringify({
-            model: 'openrouter/free',
-            messages: [
-              { role: 'system', content: SYSTEM_PROMPT },
-              { role: 'user', content: `Difficulty: ${difficulty}\n\nResource text:\n<document>\n${trimmedText}\n</document>\n\nGenerate 8 Speed Sniper rounds now.` }
-            ],
-            response_format: { type: 'json_object' },
-            max_tokens: 4000,
-            temperature: 0.2,
-          }),
-        });
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'HTTP-Referer': referer,
+              'X-Title': 'Black Box Game Engine',
+              'Content-Type': 'application/json',
+            },
+            signal: controller.signal,
+            body: JSON.stringify({
+              model,
+              messages: [
+                { role: 'system', content: SYSTEM_PROMPT },
+                { role: 'user', content: `Difficulty: ${difficulty}\n\nResource text:\n<document>\n${trimmedText}\n</document>\n\nGenerate 8 Speed Sniper rounds now.` }
+              ],
+              response_format: { type: 'json_object' },
+              max_tokens: 4000,
+              temperature: 0.2,
+            }),
+          });
 
-        clearTimeout(timeoutId);
+          clearTimeout(timeoutId);
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
-        }
+          // On 429, break inner loop and try next model
+          if (response.status === 429) {
+            const errorText = await response.text();
+            lastError = new Error(`Rate limited on ${model}: ${errorText}`);
+            await new Promise((r) => setTimeout(r, 2000));
+            break; // try next model
+          }
 
-        const data = await response.json();
-        const rawText = data.choices?.[0]?.message?.content || '{}';
-        const rawContent = JSON.parse(rawText);
-        
-        return this.validateAndBuild(rawContent, difficulty);
-      } catch (err: any) {
-        lastError = err;
-        if (attempt < 2) {
-          await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
+          }
+
+          const data = await response.json();
+          const rawText = data.choices?.[0]?.message?.content || '{}';
+          const rawContent = JSON.parse(rawText);
+
+          return this.validateAndBuild(rawContent, difficulty);
+        } catch (err: any) {
+          lastError = err;
+          if (attempt < 1) {
+            await new Promise((r) => setTimeout(r, 1000));
+          }
         }
       }
     }
 
-    throw lastError ?? new Error('OpenRouter API failed after retries');
+    throw lastError ?? new Error('All models failed after retries');
   }
 
   private validateAndBuild(raw: any, difficulty: Difficulty): SniperContent {
