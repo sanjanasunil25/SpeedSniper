@@ -40,19 +40,15 @@ export default function ResultsScreen({ state, onReset }: ResultsScreenProps) {
   };
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
-      alignItems: 'center', 
-      justifyContent: 'center', 
-      minHeight: '100vh', 
-      width: '100vw',
-      padding: '4rem 2rem', 
-      textAlign: 'center', 
-      overflowY: 'auto',
+    <div style={{
+      width: '100%',
+      minHeight: '100vh',
+      padding: '24px 16px 80px',
+      textAlign: 'center',
       backgroundColor: '#0a0a1a',
       color: '#f8fafc',
-      position: 'relative'
+      position: 'relative',
+      boxSizing: 'border-box',
     }}>
       {/* Background Star Burst Effect */}
       <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
@@ -75,19 +71,19 @@ export default function ResultsScreen({ state, onReset }: ResultsScreenProps) {
         ))}
       </div>
 
-      <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '900px' }}>
-        <h1 style={{ 
-          fontSize: '4rem', 
-          fontWeight: 900, 
-          color: '#f1f5f9', 
+      <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '900px', margin: '0 auto' }}>
+        <h1 style={{
+          fontSize: 'clamp(2rem, 8vw, 4rem)',
+          fontWeight: 900,
+          color: '#f1f5f9',
           marginBottom: '0.5rem',
           textShadow: '0 0 20px rgba(99, 102, 241, 0.5)',
           letterSpacing: '-0.02em'
         }}>MISSION COMPLETE</h1>
-        <h2 style={{ fontSize: '2rem', marginBottom: '4rem', color: '#6366f1', fontWeight: 700 }}>{getTagline()}</h2>
+        <h2 style={{ fontSize: 'clamp(1.2rem, 4vw, 2rem)', marginBottom: '2rem', color: '#6366f1', fontWeight: 700 }}>{getTagline()}</h2>
         
         {/* Main Stats with Glowing Value */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', width: '100%', marginBottom: '4rem' }}>
+        <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', width: '100%', marginBottom: '2rem' }}>
           {[
             { label: 'Total Score', value: displayScore, color: '#f8fafc', glow: 'rgba(255, 255, 255, 0.3)' },
             { label: 'Accuracy', value: `${hits} / 8`, color: '#6366f1', glow: 'rgba(99, 102, 241, 0.3)' },
@@ -179,23 +175,25 @@ export default function ResultsScreen({ state, onReset }: ResultsScreenProps) {
           </div>
         </div>
         
-        {/* Play Again with Pulsing Gradient */}
-        <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
+        {/* Play Again */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem', paddingBottom: '24px' }}>
           <button
             onClick={onReset}
             className="play-again-btn"
-            style={{ 
-              padding: '1.5rem 5rem', 
-              borderRadius: '1rem', 
-              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', 
-              color: '#ffffff', 
-              fontSize: '1.5rem', 
-              fontWeight: 900, 
-              border: 'none', 
+            style={{
+              padding: '1rem 3rem',
+              borderRadius: '50px',
+              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+              color: '#ffffff',
+              fontSize: 'clamp(1rem, 3vw, 1.5rem)',
+              fontWeight: 900,
+              border: 'none',
               cursor: 'pointer',
               boxShadow: '0 0 30px rgba(99, 102, 241, 0.4)',
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-              animation: 'pulse-glow 2s infinite'
+              animation: 'pulse-glow 2s infinite',
+              width: '100%',
+              maxWidth: '400px',
             }}
           >
             NEW MISSION
@@ -204,17 +202,9 @@ export default function ResultsScreen({ state, onReset }: ResultsScreenProps) {
       </div>
 
       <style>{`
-        @keyframes star-burst {
-          from { transform: translate(0, 0) scale(1); opacity: 1; }
-          to { transform: translate(calc(Math.random() * 1000px - 500px), calc(Math.random() * 1000px - 500px)) scale(0); opacity: 0; }
-        }
         @keyframes slide-up {
           from { transform: translateY(30px); opacity: 0; }
           to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes star-burst {
-          from { transform: translate(0, 0) scale(1); opacity: 1; }
-          to { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
         @keyframes pulse-glow {
           0%, 100% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.4); }
@@ -223,6 +213,11 @@ export default function ResultsScreen({ state, onReset }: ResultsScreenProps) {
         .play-again-btn:hover {
           filter: brightness(1.2);
           transform: translateY(-4px) !important;
+        }
+        @media (min-width: 600px) {
+          .stats-grid {
+            grid-template-columns: repeat(4, 1fr) !important;
+          }
         }
       `}</style>
     </div>
